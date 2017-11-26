@@ -1,13 +1,12 @@
 package xyz.sachonidas.gangame.deals
 
-import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import android.view.View
 import xyz.sachonidas.commons.BaseListFragment
 import xyz.sachonidas.commons.DataBindingRecyclerAdapter
 import xyz.sachonidas.gangame.BR
 import xyz.sachonidas.gangame.Deal
 import xyz.sachonidas.gangame.R
+import xyz.sachonidas.gangame.data.GangameDataSource
 
 /**
  * Created by sachonidas on 20/9/17.
@@ -19,11 +18,41 @@ class DealsFragment : BaseListFragment() {
                 R.layout.item_deal)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onResume() {
+        super.onResume()
+        showDeals()
+    }
+
+    private fun showDeals(){
+        GangameDataSource
+                .getDeals()
+                .subscribe({ list ->
+                    replaceItems(list)
+                }, { error ->
+                    showError(error)
+                })
+    }
+
+
+    private fun replaceItems(list: List<Deal>){
+        with(listAdapter as DataBindingRecyclerAdapter<Deal>){
+            items.clear()
+            items.addAll(list)
+            notifyDataSetChanged()
+        }
+    }
+
+    private fun showError(error: Throwable) {
+        error.printStackTrace()
+    }
+
+
+    /*override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         (listAdapter as DataBindingRecyclerAdapter<Deal>)
                 .items.addAll(getDummyDeals())
+        listAdapter.notifyDataSetChanged()
     }
 
     fun getDummyDeals():ArrayList<Deal>{
@@ -32,8 +61,8 @@ class DealsFragment : BaseListFragment() {
                 9.99F,
                 80,
                 80,
-                "http://cdn.akami.steamstatic.com/steam/apps/10/capsule_184x69.jpg "))
-    }
+                "http://cdn.akamai.steamstatic.com/steam/apps/10/capsule_184x69.jpg"))
+    }*/
 
 
 }

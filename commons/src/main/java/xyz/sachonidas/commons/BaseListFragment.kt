@@ -12,8 +12,7 @@ import kotlinx.android.synthetic.main.fragment_list.view.*
 
 abstract class BaseListFragment : BaseFragment(){
 
-    val listAdapter : RecyclerView.Adapter<*>
-        get() = getAdapter()
+    lateinit var listAdapter : RecyclerView.Adapter<*>
 
     override fun getLayoutResId(): Int {
         return R.layout.fragment_list
@@ -21,6 +20,8 @@ abstract class BaseListFragment : BaseFragment(){
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        listAdapter = getAdapter()
 
         //Evitar codigo repetitivo y evitar null en el view list
         view?.list?.let {
